@@ -98,7 +98,6 @@ const getNowPlaying = async (updateLastSong = true) => {
                 return
             }
             lastSongId = songId
-            return
         }
 
         return `I'm listening to ${songName} by ${artistNames.join(",")} \n [🎵open spotify🎵](${songUrl}) \n ![](${thumbnailUrl})`
