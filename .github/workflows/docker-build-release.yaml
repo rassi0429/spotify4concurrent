@@ -8,7 +8,7 @@ jobs:
   build_and_push:
     runs-on: ubuntu-latest
     env:
-      IMAGE_NAME: ${GITHUB_REPOSITORY#${GITHUB_REPOSITORY_OWNER}/}
+      IMAGE_NAME: ${GITHUB_REPOSITORY}
     steps:
       - name: checkout
         uses: actions/checkout@v2
