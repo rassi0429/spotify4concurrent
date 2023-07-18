@@ -1,6 +1,6 @@
 {
   "name": "spotify4concurrent",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "main": "main.mjs",
   "scripts": {
@@ -11,7 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@concurrent-world/client": "^1.2.0",
+    "@concurrent-world/client": "^1.2.1",
     "axios": "^1.4.0",
     "express": "^4.18.2"
   }
