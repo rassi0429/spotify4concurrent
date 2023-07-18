@@ -27,7 +27,7 @@ streamSocket.listen([homeStream])
 streamSocket.on("MessageCreated", async (e) => {
     const message = await client.getMessage(e.id, e.owner)
     if (message.body && message.body.startsWith("/np")) {
-        const nowPlaying = await getNowPlaying()
+        const nowPlaying = await getNowPlaying(false)
         const replyStream = message.streams.map(stream => stream.id)
         if (nowPlaying) {
             await client.reply(e.id, e.owner, replyStream, nowPlaying)
@@ -73,7 +73,7 @@ const checkNowPlaying = async () => {
     }
 }
 
-const getNowPlaying = async () => {
+const getNowPlaying = async (updateLastSong = true) => {
     try {
         const response = await axios({
             method: 'get',
@@ -93,10 +93,13 @@ const getNowPlaying = async () => {
         const thumbnailUrl = data.item.album.images[0].url
         const songUrl = data.item.external_urls.spotify
 
-        if (songId === lastSongId) {
+        if(updateLastSong){
+            if (songId === lastSongId) {
+                return
+            }
+            lastSongId = songId
             return
         }
-        lastSongId = songId
 
         return `I'm listening to ${songName} by ${artistNames.join(",")} \n [🎵open spotify🎵](${songUrl}) \n ![](${thumbnailUrl})`
 
