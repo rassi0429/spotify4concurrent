@@ -14,7 +14,7 @@ const clientSig = "spotify4concurrent";
 const postStreams = process.env.CONCURENT_POST_STREAMS.split(',');
 
 
-const client = new Client(userAddress, privateKey, host, clientSig);
+const client = new Client(privateKey, host, clientSig);
 
 const concurrentUser = await client.getUser(userAddress)
 const homeStream = concurrentUser.userstreams.homeStream
@@ -69,7 +69,7 @@ let lastSongId = null
 const checkNowPlaying = async () => {
     const nowPlaying = await getNowPlaying()
     if (nowPlaying) {
-        await client.createCurrent(nowPlaying, postStreams);
+        await client.createCurrent(nowPlaying, postStreams, {}, {});
     }
 }
 
