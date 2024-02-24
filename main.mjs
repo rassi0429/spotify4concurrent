@@ -1,5 +1,6 @@
 import axios from "axios"
-import {Client} from "@concurrent-world/client";
+import {Client, Message} from "@concurrent-world/client";
+import {SimpleNote} from "@concurrent-world/client/dist/cjs/schemas/simpleNote";
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
@@ -14,28 +15,39 @@ const clientSig = "spotify4concurrent";
 const postStreams = process.env.CONCURENT_POST_STREAMS.split(',');
 
 
-const client = new Client(privateKey, host, clientSig);
+const client = new Client(host, {privatekey: privateKey, publickey: userAddress}, clientSig);
 
 const concurrentUser = await client.getUser(userAddress)
-const homeStream = concurrentUser.userstreams.homeStream
+const homeStream = concurrentUser.userstreams.payload.body.homeStream
 
-const streamSocket = client.newSocket();
+const streamSocket = await client.newSocket();
 
-await streamSocket.waitOpen()
-streamSocket.listen([homeStream])
-
-streamSocket.on("MessageCreated", async (e) => {
-    const message = await client.getMessage(e.id, e.owner)
-    if (message.body && message.body.startsWith("/np")) {
-        const nowPlaying = await getNowPlaying(false)
-        const replyStream = message.streams.map(stream => stream.id)
-        if (nowPlaying) {
-            await client.reply(e.id, e.owner, replyStream, nowPlaying)
-        } else {
-            await client.reply(e.id, e.owner, replyStream, "I'm not listening to anything")
+streamSocket.listen([homeStream], async (e) => {
+    if (e.type === "MessageCreated") {
+        const message = await client.getMessage(e.body.id, e.body.owner)
+        if (message.body && message.body.startsWith("/np")) {
+            const nowPlaying = await getNowPlaying(false)
+            if (nowPlaying) {
+                await message.reply(e.body.streams, nowPlaying)
+            } else {
+                await message.reply(e.body.streams, "I'm not listening to anything")
+            }
         }
     }
 })
+
+// streamSocket.on("MessageCreated", async (e) => {
+//     const message = await client.getMessage(e.id, e.owner)
+//     if (message.body && message.body.startsWith("/np")) {
+//         const nowPlaying = await getNowPlaying(false)
+//         const replyStream = message.streams.map(stream => stream.id)
+//         if (nowPlaying) {
+//             await client.reply(e.id, e.owner, replyStream, nowPlaying)
+//         } else {
+//             await client.reply(e.id, e.owner, replyStream, "I'm not listening to anything")
+//         }
+//     }
+// })
 
 const redirectUri = 'http://localhost:3000/callback';
 
@@ -69,7 +81,7 @@ let lastSongId = null
 const checkNowPlaying = async () => {
     const nowPlaying = await getNowPlaying()
     if (nowPlaying) {
-        await client.createCurrent(nowPlaying, postStreams, {}, {});
+        await client.createCurrent(nowPlaying, postStreams, {});
     }
 }
 

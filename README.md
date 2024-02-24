@@ -1,9 +1,9 @@
-# concurrent-progress-report-bot
+# sportify4concurrent
 
 ![CI Badge](https://github.com/rassi0429/spotify4concurrent/actions/workflows/docker-build-release.yaml/badge.svg)
 ![License MIT](https://img.shields.io/github/license/rassi0429/spotify4concurrent)
 
-concurrentの今日の一日を投稿するBotです。
+ConcurrentでSpotifyのNow Listeningを流すためのツールです。
 
 ## helm repo
 
