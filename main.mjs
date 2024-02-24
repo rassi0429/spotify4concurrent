@@ -1,6 +1,5 @@
 import axios from "axios"
 import {Client, Message} from "@concurrent-world/client";
-import {SimpleNote} from "@concurrent-world/client/dist/cjs/schemas/simpleNote";
 
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
