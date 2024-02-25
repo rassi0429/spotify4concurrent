@@ -14,7 +14,7 @@ const clientSig = "spotify4concurrent";
 const postStreams = process.env.CONCURENT_POST_STREAMS.split(',');
 
 
-const client = new Client(host, {privatekey: privateKey, publickey: userAddress}, userAddress);
+const client = await Client.create(privateKey, host)
 await client.reloadUser()
 
 const concurrentUser = await client.getUser(userAddress)
@@ -25,7 +25,6 @@ const streamSocket = await client.newSocket();
 console.log(homeStream)
 
 streamSocket.listen([homeStream], async (e) => {
-    console.log(e)
     if (e.type === "message" && e.action=== "create") {
         const message = await client.getMessage(e.body.id, e.body.author)
         console.log(message)
