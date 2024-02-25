@@ -15,14 +15,12 @@ const postStreams = process.env.CONCURENT_POST_STREAMS.split(',');
 
 
 const client = await Client.create(privateKey, host)
-await client.reloadUser()
 
 const concurrentUser = await client.getUser(userAddress)
 const homeStream = concurrentUser.userstreams.payload.body.homeStream
 
 const streamSocket = await client.newSocket();
 
-console.log(homeStream)
 
 streamSocket.listen([homeStream], async (e) => {
     if (e.type === "message" && e.action=== "create") {
